@@ -70,7 +70,27 @@ export const GlobalProvider = ({ children }) => {
         stomp.send(`/topic/message-${state.currentChat.id}`, {}, JSON.stringify(messagePayload))
     }
 
-    return <GlobalContext.Provider value={{ state, functions: { initSession, setCurrentChat, sendMessage } }}>
+    const sendGif = (message) => {
+        const messageGifPayload = {
+            id: uuid(),
+            message,
+            from: state.session,
+            to: state.currentChat,
+            time: Date.now()
+        }
+        if (state.currentChat.id == 'general') {
+            return stomp.send(`/topic/message-general`, {}, JSON.stringify(messageGifPayload))
+        }
+        if (messageGifPayload.from.id == state.session.id) {
+            dispatch({
+                type: ReducerTypes.ADD_MESSAGE,
+                payload: { ...messageGifPayload, room: `${state.session.id}-${messageGifPayload.to.id}` }
+            })
+        }
+        stomp.send(`/topic/message-${state.currentChat.id}`, {}, JSON.stringify(messageGifPayload))
+    }
+
+    return <GlobalContext.Provider value={{ state, functions: { initSession, setCurrentChat, sendMessage, sendGif } }}>
         {children}
     </GlobalContext.Provider>
 }
