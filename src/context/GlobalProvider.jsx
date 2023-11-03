@@ -37,7 +37,7 @@ export const GlobalProvider = ({ children }) => {
         }))
         setInterval(() => {
             stomp.send('/topic/online', {}, JSON.stringify(state.session))
-        }, 1000)
+        }, 1000000)
     }, [state.session])
 
     const initSession = (username) => dispatch({
@@ -50,10 +50,10 @@ export const GlobalProvider = ({ children }) => {
         payload: user
     })
 
-    const sendMessage = (message) => {
+    const sendMessage = (object) => {
         const messagePayload = {
             id: uuid(),
-            message,
+            message: object,
             from: state.session,
             to: state.currentChat,
             time: Date.now()
@@ -70,27 +70,7 @@ export const GlobalProvider = ({ children }) => {
         stomp.send(`/topic/message-${state.currentChat.id}`, {}, JSON.stringify(messagePayload))
     }
 
-    const sendGif = (message) => {
-        const messageGifPayload = {
-            id: uuid(),
-            message,
-            from: state.session,
-            to: state.currentChat,
-            time: Date.now()
-        }
-        if (state.currentChat.id == 'general') {
-            return stomp.send(`/topic/message-general`, {}, JSON.stringify(messageGifPayload))
-        }
-        if (messageGifPayload.from.id == state.session.id) {
-            dispatch({
-                type: ReducerTypes.ADD_MESSAGE,
-                payload: { ...messageGifPayload, room: `${state.session.id}-${messageGifPayload.to.id}` }
-            })
-        }
-        stomp.send(`/topic/message-${state.currentChat.id}`, {}, JSON.stringify(messageGifPayload))
-    }
-
-    return <GlobalContext.Provider value={{ state, functions: { initSession, setCurrentChat, sendMessage, sendGif } }}>
+    return <GlobalContext.Provider value={{ state, functions: { initSession, setCurrentChat, sendMessage } }}>
         {children}
     </GlobalContext.Provider>
 }
