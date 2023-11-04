@@ -50,6 +50,7 @@ export const Chat = () => {
         functions.sendMessage(event.target.giftosend.value);
         event.target.giftosend.value=''
         setShowGifSearch(!showGifSearch)
+        setModalGif(undefined);
     }
 
     function GridDemo({ onGifClick }) {
@@ -76,17 +77,17 @@ export const Chat = () => {
     }
 
     return <main className="h-screen w-screen flex">
-        <aside className="h-screen w-[300px] bg-indigo-500">
+        <aside style={{backgroundColor: '#f99aaa'}} className="h-screen w-[300px]">
             <p className="my-10 flex items-center justify-center font-bold text-white">REACT CHAT</p>
-            <div className="mx-2 border border-indigo-400 mb-5" />
+            <div className="mx-2 border border-pink-600 mb-5" />
             <UserChatButton key={'general'} user={generalUser} alwaysOnline />
             {Object.entries(state.onlineUsers).map(([key, value]) => {
                 if (key == state.session.id) return <></>
                 return <UserChatButton key={key} user={value} />
             })}
         </aside>
-        <section className="h-full w-full bg-indigo-100 flex flex-col">
-            <header className="h-10 w-full bg-indigo-500 flex items-center font-semibold text-white">
+        <section style={{backgroundColor: '#ffe5f0'}} className="h-full w-full flex flex-col">
+            <header style={{backgroundColor: '#f99aaa'}} className="h-10 w-full flex items-center font-semibold text-white">
                 Chat General
             </header>
             <section className="h-full w-full px-40 py-10 overflow-auto">
@@ -100,19 +101,17 @@ export const Chat = () => {
             <section className="mb-5 px-40">
                 <form onSubmit={onSubmitMessage} className="flex gap-4">
                     <input name="texttosend" type="text" className="border rounded w-full px-2" />
-                    <button className="bg-indigo-500 rounded py-1 px-4 text-white">Send</button>
+                    <button onClick={onClickGif} style={{backgroundColor: '#f99aaa'}} className="rounded py-4 px-4 text-white">Gif</button>
+                    {showGifSearch &&
+                    <input onChange={handleChange} name="textGif" type="text" placeholder="Buscar ..."/>
+              }
+                    <button style={{backgroundColor: '#f99aaa'}} className="rounded py-1 px-4 text-white">Send</button>
                 </form>
+                
             </section>
             <section className="mb-5 px-60">
-            <button style={{position:'fixed',top:'90.35%',right:'13.5%'}} onClick={onClickGif} className="bg-indigo-500 rounded py-1 px-4 text-white">Gif</button>
-              {showGifSearch
-              ?
-                <div>
-                    <input onChange={handleChange} name="textGif" type="text" placeholder="Buscar ..."/>
-                </div>
-                :
-                <div></div>
-              }
+            
+              
             </section>
         </section>
         {showGifSearch &&
@@ -135,10 +134,6 @@ export const Chat = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 background: "rgba(0, 0, 0, .8)"
-                }}
-                onClick={(e) => {
-                e.preventDefault();
-                setModalGif(undefined);
                 }}
             >
                 <Gif gif={modalGif} width={200} />

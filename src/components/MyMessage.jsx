@@ -1,15 +1,17 @@
-import { isNil } from "lodash"
-import { Gif } from "@giphy/react-components";
-
 export const MyMessage = ({ message }) => {
     return <>
         <div className="flex justify-end mb-3">
-            <div className="bg-indigo-400 max-w-sm p-5 rounded-t-lg rounded-bl-lg">
-            <p>{
-            message?.message}</p>
-            {console.log("msg",message)}
+            <div style={{backgroundColor: '#e15c7c'}} className="max-w-sm p-5 rounded-t-lg rounded-bl-lg">
+                {render(message?.message)}
             </div>
         </div>
-        {<img src={message.message} className="h-10 w-10 object-cover border-2 border-purple-200 rounded-full cursor-pointer "></img>}
     </>
+}
+
+const render = (message) => {
+    if(message.includes("giphy.com/embed"))
+    return <iframe src={message} width="100" height="100" frameBorder="0" class="giphy-embed"
+    allowFullScreen></iframe>
+
+    return <p>{message}</p>
 }
